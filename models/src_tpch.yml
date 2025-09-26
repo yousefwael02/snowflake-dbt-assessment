@@ -1,0 +1,34 @@
+version: 2
+
+sources:
+  - name: tpch
+    database: SNOWFLAKE_SAMPLE_DATA
+    schema: TPCH_SF1
+    tables:
+      - name: customer
+      - name: orders
+      - name: lineitem
+
+models:
+  - name: stg_orders
+    description: "Orders joined with customers, include order year and total price"
+    columns:
+      - name: o_orderkey
+        description: "Primary key for orders"
+        tests:
+          - unique
+          - not_null
+      - name: order_year
+        description: "Year extracted from order date"
+      - name: o_totalprice
+        description: "Total price of the order"
+
+  - name: customer_revenue
+    description: "Aggregated customer revenue computed from orders and lineitems"
+    columns:
+      - name: c_custkey
+        description: "Primary key for customers in this model"
+        tests:
+          - not_null
+      - name: total_revenue
+        description: "Total revenue for the customer (after discounts)"
